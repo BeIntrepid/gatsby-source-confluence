@@ -115,7 +115,7 @@ const formatPageNode = (
     slug: slugify(result.title),
     confluenceUrl: `${baseUrl}${result._links.webui}`,
     createdDate: new Date(result.history.createdDate),
-    updatedDate: new Date(result.history.lastUpdated.when),
+//     updatedDate: new Date(result.history.lastUpdated.when),
     author: {
       name: result.history.createdBy.displayName,
       email: result.history.createdBy.email,
