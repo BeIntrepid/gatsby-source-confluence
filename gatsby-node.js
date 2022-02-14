@@ -7,7 +7,7 @@ exports.sourceNodes = async (
   const { createNode } = actions
 
   // Get data from Confluence
-  const fetchURL = 'https://'+ pluginOptions.hostname +'/wiki/rest/api/content/search/?cql=('+ pluginOptions.cql +')&expand=body.view,metadata.labels,history,ancestors,children.attachment&limit='+ pluginOptions.limit
+  const fetchURL = 'https://'+ pluginOptions.hostname +'/wiki/rest/api/content/search/?cql=('+ pluginOptions.cql +')&expand=body.view,metadata.labels,history,version,ancestors,children.attachment&limit='+ pluginOptions.limit
   const response = await fetchRequest(fetchURL, pluginOptions.auth)
 
   const baseUrl = 'https://'+ pluginOptions.hostname +'/wiki';
@@ -115,6 +115,7 @@ const formatPageNode = (
     slug: slugify(result.title),
     confluenceUrl: `${baseUrl}${result._links.webui}`,
     createdDate: new Date(result.history.createdDate),
+    updatedDate: new Date(result.version.when),
     author: {
       name: result.history.createdBy.displayName,
       email: result.history.createdBy.email,
