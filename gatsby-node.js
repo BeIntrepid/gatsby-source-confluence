@@ -112,7 +112,7 @@ const formatPageNode = (
   content = {
     confluenceId: result.id,
     title: result.title,
-    slug: result.id, //was  slugify(result.title) but then this would break bookmarks if a title is changed
+    slug: slugify(result.title),
     confluenceUrl: `${baseUrl}${result._links.webui}`,
     createdDate: new Date(result.history.createdDate),
     author: {
