@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 
 exports.sourceNodes = async (
   { actions, ...createNodeHelperFunctions },
