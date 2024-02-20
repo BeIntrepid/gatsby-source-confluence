@@ -143,7 +143,7 @@ const formatPageNode = (
     ancestors: result.ancestors,
     images: pImages,
     attachments: result.children.attachment.results,
-    children: result.children.page.results,
+    confluenceChildren: result.children.page.results,
   }
 
   const nodeId = createNodeId(`confluence-page-${content.confluenceId}`)
@@ -152,6 +152,7 @@ const formatPageNode = (
   const nodeData = Object.assign({}, content, {
     id: nodeId,
     parent: null,
+    children: [],
     internal: {
       type: `ConfluencePage`,
       content: nodeContent,
