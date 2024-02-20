@@ -17,10 +17,7 @@ exports.sourceNodes = async (
      "ancestors",
      "children.attachment",
      "children.attachment.metadata.labels",
-     "children.page.body.dynamic",
-     "children.page.body.export_view",
-     "children.page.metadata.labels",
-     "children.page.children.attachment.metadata.labels",
+     "children.page",
   ].join(',');
 
   const fetchURL = `https://${pluginOptions.hostname}/wiki/rest/api/content/search/?cql=(${pluginOptions.cql})&expand=${expansions}&limit=${pluginOptions.limit}`;
@@ -125,6 +122,10 @@ const formatPageNode = (
     }
   }
 
+  let children = result.children.page.results.map(
+     page => page.id
+  );
+
   content = {
     confluenceId: result.id,
     title: result.title,
@@ -143,7 +144,7 @@ const formatPageNode = (
     ancestors: result.ancestors,
     images: pImages,
     attachments: result.children.attachment.results,
-    confluenceChildren: result.children.page.results,
+    confluenceChildren: children,
   }
 
   const nodeId = createNodeId(`confluence-page-${content.confluenceId}`)
