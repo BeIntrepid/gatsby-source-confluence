@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 
 exports.sourceNodes = async (
   { actions, ...createNodeHelperFunctions },
@@ -7,7 +6,21 @@ exports.sourceNodes = async (
   const { createNode } = actions
 
   // Get data from Confluence
-  const fetchURL = 'https://'+ pluginOptions.hostname +'/wiki/rest/api/content/search/?cql=('+ pluginOptions.cql +')&expand=body.view,metadata.labels,history,version,ancestors,children.attachment&limit='+ pluginOptions.limit
+
+  const expansions = [
+     "version",
+     "history",
+     "body.view",
+     "body.dynamic",
+     "body.export_view",
+     "metadata.labels",
+     "ancestors",
+     "children.attachment",
+     "children.attachment.metadata.labels",
+     "children.page",
+  ].join(',');
+
+  const fetchURL = `https://${pluginOptions.hostname}/wiki/rest/api/content/search/?cql=(${pluginOptions.cql})&expand=${expansions}&limit=${pluginOptions.limit}`;
   const response = await fetchRequest(fetchURL, pluginOptions.auth)
 
   const baseUrl = 'https://'+ pluginOptions.hostname +'/wiki';
@@ -109,6 +122,10 @@ const formatPageNode = (
     }
   }
 
+  let children = result.children.page.results.map(
+     page => page.id
+  );
+
   content = {
     confluenceId: result.id,
     title: result.title,
@@ -121,9 +138,13 @@ const formatPageNode = (
       email: result.history.createdBy.email,
     },
     bodyHtml: htmlBody,
+    bodyDynamic: result.body.dynamic.value,
+    bodyExport: result.body.export_view.value,
     labels: pLabels,
     ancestors: result.ancestors,
-    images: pImages
+    images: pImages,
+    attachments: result.children.attachment.results,
+    confluenceChildren: children,
   }
 
   const nodeId = createNodeId(`confluence-page-${content.confluenceId}`)
